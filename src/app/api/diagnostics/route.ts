@@ -108,7 +108,7 @@ export async function GET(req: Request) {
 
   let authRouteResponding: boolean | null = null;
   try {
-    const res = await fetch(`${origin}/api/auth/session`, {
+    const res = await fetch(`${origin}/api/auth/get-session`, {
       method: "GET",
       headers: { Accept: "application/json" },
       cache: "no-store",
