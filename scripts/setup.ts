@@ -1,6 +1,6 @@
 #!/usr/bin/env npx tsx
 /**
- * Interactive setup wizard for the Agentic Coding Starter Kit.
+ * Interactive setup wizard for Plushify.
  * Run with: npx tsx scripts/setup.ts
  */
 
@@ -225,7 +225,7 @@ function printNextSteps(envStatus: EnvStatus) {
 }
 
 async function main() {
-  header("Agentic Coding Starter Kit - Setup Wizard");
+  header("Plushify - Setup Wizard");
 
   // Step 1: Check Node version
   log("Checking Node.js version...", "cyan");

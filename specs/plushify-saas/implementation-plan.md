@@ -154,75 +154,75 @@ Build all public-facing pages that don't require authentication.
 Build all authenticated user pages using mock data to simulate signed-in state.
 
 ### Dashboard
-- [ ] Rewrite `src/app/dashboard/page.tsx` (Client Component):
-  - [ ] Remove diagnostics hook and real auth session checks
-  - [ ] Import and use MOCK_USER and MOCK_GALLERY from mock-data.ts
-  - [ ] Welcome header: "Welcome back, Jane!" with Pro plan badge
-  - [ ] 4 stat cards in a responsive row: Credits Remaining (75/100), Total Generations (42), This Month (8), Plan (Pro)
-  - [ ] Credit usage progress bar (shadcn Progress component) showing 75/100
-  - [ ] Large "Create New Plushie" CTA button linking to /generate
-  - [ ] "Recent Generations" section: grid of 4 most recent MOCK_GALLERY items as clickable cards with gradient placeholders, linking to /gallery
+- [x] Rewrite `src/app/dashboard/page.tsx` (Client Component):
+  - [x] Remove diagnostics hook and real auth session checks
+  - [x] Import and use MOCK_USER and MOCK_GALLERY from mock-data.ts
+  - [x] Welcome header: "Welcome back, Jane!" with Pro plan badge
+  - [x] 4 stat cards in a responsive row: Credits Remaining (75/100), Total Generations (42), This Month (8), Plan (Pro)
+  - [x] Credit usage progress bar (shadcn Progress component) showing 75/100
+  - [x] Large "Create New Plushie" CTA button linking to /generate
+  - [x] "Recent Generations" section: grid of 4 most recent MOCK_GALLERY items as clickable cards with gradient placeholders, linking to /gallery
 
 ### Generate Page
-- [ ] Create `src/components/generate/upload-zone.tsx`:
-  - [ ] Dashed border drop zone with Upload icon and text ("Drag & drop your image here or click to browse")
-  - [ ] Hidden file input triggered on click, accepts image/png, image/jpeg
-  - [ ] onDragOver/onDrop handlers for drag-and-drop
-  - [ ] When file selected: show image preview using URL.createObjectURL
-  - [ ] "Change Image" button to re-select
-- [ ] Create `src/components/generate/style-selector.tsx`:
-  - [ ] Renders PLUSHIE_STYLES as a grid of selectable cards
-  - [ ] Selected card highlighted with accent border
-  - [ ] Each card: style name, description
-  - [ ] Props: selectedStyle, onSelectStyle callback
-- [ ] Create `src/components/generate/generation-result.tsx`:
-  - [ ] Before panel: shows the uploaded image preview
-  - [ ] After panel: shows a warm gradient placeholder as the "generated" result
-  - [ ] Action buttons: "Save to Gallery", "Download", "Generate Another"
-  - [ ] Props: beforeImageUrl, onSave, onDownload, onReset callbacks
-- [ ] Create `src/app/generate/page.tsx` (Client Component):
-  - [ ] State management: selectedFile, selectedStyle, isGenerating, showResult
-  - [ ] Upload section using UploadZone component
-  - [ ] Style selection using StyleSelector component
-  - [ ] Settings panel: size Select dropdown (512x512, 1024x1024), quality toggle
-  - [ ] Credit cost: "This will use 1 credit. You have 75 remaining." from MOCK_USER
-  - [ ] Generate button: primary, disabled until file selected, onClick triggers mock generation
-  - [ ] Mock generation: set isGenerating=true, setTimeout 2 seconds, set showResult=true
-  - [ ] Result display using GenerationResult component
-  - [ ] "Generate Another" resets all state
+- [x] Create `src/components/generate/upload-zone.tsx`:
+  - [x] Dashed border drop zone with Upload icon and text ("Drag & drop your image here or click to browse")
+  - [x] Hidden file input triggered on click, accepts image/png, image/jpeg
+  - [x] onDragOver/onDrop handlers for drag-and-drop
+  - [x] When file selected: show image preview using URL.createObjectURL
+  - [x] "Change Image" button to re-select
+- [x] Create `src/components/generate/style-selector.tsx`:
+  - [x] Renders PLUSHIE_STYLES as a grid of selectable cards
+  - [x] Selected card highlighted with accent border
+  - [x] Each card: style name, description
+  - [x] Props: selectedStyle, onSelectStyle callback
+- [x] Create `src/components/generate/generation-result.tsx`:
+  - [x] Before panel: shows the uploaded image preview
+  - [x] After panel: shows a warm gradient placeholder as the "generated" result
+  - [x] Action buttons: "Save to Gallery", "Download", "Generate Another"
+  - [x] Props: beforeImageUrl, onSave, onDownload, onReset callbacks
+- [x] Create `src/app/generate/page.tsx` (Client Component):
+  - [x] State management: selectedFile, selectedStyle, isGenerating, showResult
+  - [x] Upload section using UploadZone component
+  - [x] Style selection using StyleSelector component
+  - [x] Settings panel: size Select dropdown (512x512, 1024x1024), quality toggle
+  - [x] Credit cost: "This will use 1 credit. You have 75 remaining." from MOCK_USER
+  - [x] Generate button: primary, disabled until file selected, onClick triggers mock generation
+  - [x] Mock generation: set isGenerating=true, setTimeout 2 seconds, set showResult=true
+  - [x] Result display using GenerationResult component
+  - [x] "Generate Another" resets all state
 
 ### Gallery Page
-- [ ] Create `src/components/gallery/gallery-card.tsx`:
-  - [ ] Renders a single gallery item as a card
-  - [ ] Gradient placeholder with aspect-square ratio
-  - [ ] Title, style badge (using shadcn Badge), date formatted
-  - [ ] Hover overlay with semi-transparent background and "View" button
-  - [ ] Props: gallery item data, onClick callback
-- [ ] Create `src/components/gallery/gallery-detail-modal.tsx`:
-  - [ ] shadcn Dialog component
-  - [ ] Full before/after comparison using BeforeAfterCard
-  - [ ] Metadata: title, style, date created, credit cost
-  - [ ] Action buttons: "Download" and "Delete" (UI only, no real functionality)
-  - [ ] Props: gallery item (or null), open state, onClose callback
-- [ ] Create `src/app/gallery/page.tsx` (Client Component):
-  - [ ] Import MOCK_GALLERY from mock-data.ts
-  - [ ] State: selectedStyle filter, sortOrder, selectedItem for modal
-  - [ ] Header: "Your Gallery" with total count badge
-  - [ ] Filter bar: style Select dropdown (All + each style), sort Select (Newest/Oldest)
-  - [ ] Filter/sort logic applied to MOCK_GALLERY
-  - [ ] Responsive grid: `grid-cols-2 md:grid-cols-3 lg:grid-cols-4` with gap
-  - [ ] Render GalleryCard for each filtered item
-  - [ ] GalleryDetailModal opens when a card is clicked
+- [x] Create `src/components/gallery/gallery-card.tsx`:
+  - [x] Renders a single gallery item as a card
+  - [x] Gradient placeholder with aspect-square ratio
+  - [x] Title, style badge (using shadcn Badge), date formatted
+  - [x] Hover overlay with semi-transparent background and "View" button
+  - [x] Props: gallery item data, onClick callback
+- [x] Create `src/components/gallery/gallery-detail-modal.tsx`:
+  - [x] shadcn Dialog component
+  - [x] Full before/after comparison using BeforeAfterCard
+  - [x] Metadata: title, style, date created, credit cost
+  - [x] Action buttons: "Download" and "Delete" (UI only, no real functionality)
+  - [x] Props: gallery item (or null), open state, onClose callback
+- [x] Create `src/app/gallery/page.tsx` (Client Component):
+  - [x] Import MOCK_GALLERY from mock-data.ts
+  - [x] State: selectedStyle filter, sortOrder, selectedItem for modal
+  - [x] Header: "Your Gallery" with total count badge
+  - [x] Filter bar: style Select dropdown (All + each style), sort Select (Newest/Oldest)
+  - [x] Filter/sort logic applied to MOCK_GALLERY
+  - [x] Responsive grid: `grid-cols-2 md:grid-cols-3 lg:grid-cols-4` with gap
+  - [x] Render GalleryCard for each filtered item
+  - [x] GalleryDetailModal opens when a card is clicked
 
 ### Profile Page
-- [ ] Update `src/app/profile/page.tsx`:
-  - [ ] Remove real auth checks, import MOCK_USER from mock-data.ts
-  - [ ] Account overview card: avatar (initials fallback), name, email, plan badge (Pro), member since date
-  - [ ] Subscription section: current plan name, credits progress (75/100 using Progress component), next renewal date (mock)
-  - [ ] Credit history section: mock table with 5-6 rows showing date, description (e.g., "Plushie Generation", "Pro Plan - 100 Credits"), credits (+/-), balance
-  - [ ] Account settings section: display name and email (read-only for now)
-  - [ ] Danger zone card: "Delete Account" destructive button (UI only)
-- [ ] Run `pnpm lint && pnpm typecheck` to verify
+- [x] Update `src/app/profile/page.tsx`:
+  - [x] Remove real auth checks, import MOCK_USER from mock-data.ts
+  - [x] Account overview card: avatar (initials fallback), name, email, plan badge (Pro), member since date
+  - [x] Subscription section: current plan name, credits progress (75/100 using Progress component), next renewal date (mock)
+  - [x] Credit history section: mock table with 5-6 rows showing date, description (e.g., "Plushie Generation", "Pro Plan - 100 Credits"), credits (+/-), balance
+  - [x] Account settings section: display name and email (read-only for now)
+  - [x] Danger zone card: "Delete Account" destructive button (UI only)
+- [x] Run `pnpm lint && pnpm typecheck` to verify
 
 ---
 
@@ -231,35 +231,35 @@ Build all authenticated user pages using mock data to simulate signed-in state.
 Build documentation pages and perform a final quality sweep.
 
 ### Documentation Pages
-- [ ] Create `src/app/docs/layout.tsx`:
-  - [ ] Sidebar navigation with links: Getting Started, Credits, FAQ, API Reference
-  - [ ] Active link highlighting based on current path
-  - [ ] Main content area with prose-appropriate max-width
-  - [ ] Responsive: sidebar collapses on mobile
-- [ ] Create `src/app/docs/page.tsx` (Server Component):
-  - [ ] Export metadata with title: "Documentation | Plushify"
-  - [ ] Overview heading and brief description of Plushify
-  - [ ] Card-based links to each documentation sub-page with descriptions
-- [ ] Create `src/app/docs/getting-started/page.tsx`:
-  - [ ] Step-by-step guide: creating an account, purchasing credits, uploading first photo, choosing a style, generating a plushie, saving to gallery
-- [ ] Create `src/app/docs/credits/page.tsx`:
-  - [ ] Explain credit system: what credits are, how they're used
-  - [ ] Pricing table showing all 3 tiers
-  - [ ] Credit costs per feature (1 credit per standard generation, etc.)
-  - [ ] Credit renewal and expiration policies
-- [ ] Create `src/app/docs/faq/page.tsx`:
-  - [ ] 6-8 common questions with answers in expandable accordion sections
-  - [ ] Topics: supported image formats, generation time, credit refunds, image quality, privacy, account deletion
-- [ ] Create `src/app/docs/api/page.tsx`:
-  - [ ] Placeholder page: "API documentation coming soon"
-  - [ ] Brief description of planned API capabilities
-  - [ ] "Available on Elite plan" callout
+- [x] Create `src/app/docs/layout.tsx`:
+  - [x] Sidebar navigation with links: Getting Started, Credits, FAQ, API Reference
+  - [x] Active link highlighting based on current path
+  - [x] Main content area with prose-appropriate max-width
+  - [x] Responsive: sidebar collapses on mobile
+- [x] Create `src/app/docs/page.tsx` (Server Component):
+  - [x] Export metadata with title: "Documentation | Plushify"
+  - [x] Overview heading and brief description of Plushify
+  - [x] Card-based links to each documentation sub-page with descriptions
+- [x] Create `src/app/docs/getting-started/page.tsx`:
+  - [x] Step-by-step guide: creating an account, purchasing credits, uploading first photo, choosing a style, generating a plushie, saving to gallery
+- [x] Create `src/app/docs/credits/page.tsx`:
+  - [x] Explain credit system: what credits are, how they're used
+  - [x] Pricing table showing all 3 tiers
+  - [x] Credit costs per feature (1 credit per standard generation, etc.)
+  - [x] Credit renewal and expiration policies
+- [x] Create `src/app/docs/faq/page.tsx`:
+  - [x] 6-8 common questions with answers in expandable accordion sections
+  - [x] Topics: supported image formats, generation time, credit refunds, image quality, privacy, account deletion
+- [x] Create `src/app/docs/api/page.tsx`:
+  - [x] Placeholder page: "API documentation coming soon"
+  - [x] Brief description of planned API capabilities
+  - [x] "Available on Elite plan" callout
 
 ### Final Cleanup & Verification
-- [ ] Search entire codebase for remaining boilerplate references: "Starter Kit", "Agentic Coding", "Boilerplate", "Leon van Zyl", "leonvanzyl"
-- [ ] Remove any dead imports, unused variables, or orphaned references
-- [ ] Verify dark mode works correctly on every page
-- [ ] Verify all pages are mobile responsive with no layout breakage
-- [ ] Verify soft pastel color theme renders correctly in both light and dark modes
-- [ ] Run `pnpm lint && pnpm typecheck` — must pass with zero errors
-- [ ] Run `pnpm build:ci` — must complete successfully
+- [x] Search entire codebase for remaining boilerplate references: "Starter Kit", "Agentic Coding", "Boilerplate", "Leon van Zyl", "leonvanzyl"
+- [x] Remove any dead imports, unused variables, or orphaned references
+- [x] Verify dark mode works correctly on every page
+- [x] Verify all pages are mobile responsive with no layout breakage
+- [x] Verify soft pastel color theme renders correctly in both light and dark modes
+- [x] Run `pnpm lint && pnpm typecheck` — must pass with zero errors
+- [x] Run `pnpm build:ci` — must complete successfully

@@ -1,69 +1,131 @@
 "use client";
 
 import Link from "next/link";
-import { Lock } from "lucide-react";
-import { UserProfile } from "@/components/auth/user-profile";
+import {
+  Sparkles,
+  ImageIcon,
+  CalendarDays,
+  Crown,
+  Plus,
+} from "lucide-react";
+import { GradientPlaceholder } from "@/components/gradient-placeholder";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/lib/auth-client";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { MOCK_USER, MOCK_GALLERY } from "@/lib/mock-data";
+
+const stats = [
+  {
+    label: "Credits Remaining",
+    value: `${MOCK_USER.credits}/100`,
+    icon: Sparkles,
+  },
+  {
+    label: "Total Generations",
+    value: MOCK_USER.totalGenerations.toString(),
+    icon: ImageIcon,
+  },
+  {
+    label: "This Month",
+    value: "8",
+    icon: CalendarDays,
+  },
+  {
+    label: "Plan",
+    value: MOCK_USER.plan,
+    icon: Crown,
+  },
+];
+
+const recentItems = MOCK_GALLERY.slice(0, 4);
 
 export default function DashboardPage() {
-  const { data: session, isPending } = useSession();
-
-  if (isPending) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        Loading...
-      </div>
-    );
-  }
-
-  if (!session) {
-    return (
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="mb-8">
-            <Lock className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-            <h1 className="text-2xl font-bold mb-2">Protected Page</h1>
-            <p className="text-muted-foreground mb-6">
-              You need to sign in to access the dashboard
-            </p>
-          </div>
-          <UserProfile />
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-6 border border-border rounded-lg">
-          <h2 className="text-xl font-semibold mb-2">Profile</h2>
-          <p className="text-muted-foreground mb-4">
-            Manage your account settings and preferences
-          </p>
-          <div className="space-y-2">
-            <p>
-              <strong>Name:</strong> {session.user.name}
-            </p>
-            <p>
-              <strong>Email:</strong> {session.user.email}
-            </p>
+    <div className="container max-w-6xl mx-auto py-8 px-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold">
+            Welcome back, {MOCK_USER.name.split(" ")[0]}!
+          </h1>
+          <div className="flex items-center gap-2 mt-1">
+            <Badge variant="secondary" className="font-medium">
+              <Crown className="h-3 w-3 mr-1" />
+              {MOCK_USER.plan} Plan
+            </Badge>
           </div>
         </div>
+        <Button asChild size="lg">
+          <Link href="/generate">
+            <Plus className="h-5 w-5 mr-2" />
+            Create New Plushie
+          </Link>
+        </Button>
+      </div>
 
-        <div className="p-6 border border-border rounded-lg">
-          <h2 className="text-xl font-semibold mb-2">Get Started</h2>
-          <p className="text-muted-foreground mb-4">
-            Start creating plushie versions of your photos
-          </p>
-          <Button asChild>
-            <Link href="/profile">View Profile</Link>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {stats.map((stat) => (
+          <Card key={stat.label}>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className="rounded-lg bg-primary/10 p-2">
+                  <stat.icon className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="text-2xl font-bold">{stat.value}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="text-lg">Credit Usage</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">
+                {MOCK_USER.credits} of 100 credits remaining
+              </span>
+              <span className="font-medium">{MOCK_USER.credits}%</span>
+            </div>
+            <Progress value={MOCK_USER.credits} />
+          </div>
+        </CardContent>
+      </Card>
+
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold">Recent Generations</h2>
+          <Button variant="ghost" asChild>
+            <Link href="/gallery">View All</Link>
           </Button>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {recentItems.map((item) => (
+            <Link key={item.id} href="/gallery">
+              <Card className="overflow-hidden hover:ring-2 hover:ring-primary/20 transition-all">
+                <GradientPlaceholder
+                  fromColor={item.afterFrom}
+                  toColor={item.afterTo}
+                  className="aspect-square"
+                />
+                <CardContent className="p-3">
+                  <p className="text-sm font-medium truncate">{item.title}</p>
+                  <p className="text-xs text-muted-foreground">{item.style}</p>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
