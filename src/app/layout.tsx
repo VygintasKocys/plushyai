@@ -18,36 +18,37 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Agentic Coding Boilerplate",
-    template: "%s | Agentic Coding Boilerplate",
+    default: "Plushify - Transform Photos into Adorable Plushies",
+    template: "%s | Plushify",
   },
   description:
-    "Complete agentic coding boilerplate with authentication, database, AI integration, and modern tooling - perfect for building AI-powered applications and autonomous agents by Leon van Zyl",
+    "Transform your photos into adorable plushie versions with AI. Upload any image and get a cute, cuddly plushie rendition in seconds.",
   keywords: [
+    "Plushify",
+    "AI plushie generator",
+    "photo to plushie",
+    "AI image transformation",
+    "cute plushie art",
+    "stuffed animal generator",
     "Next.js",
     "React",
     "TypeScript",
-    "AI",
-    "OpenRouter",
-    "Boilerplate",
-    "Authentication",
-    "PostgreSQL",
   ],
-  authors: [{ name: "Leon van Zyl" }],
-  creator: "Leon van Zyl",
+  authors: [{ name: "Plushify" }],
+  creator: "Plushify",
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Agentic Coding Boilerplate",
-    title: "Agentic Coding Boilerplate",
+    siteName: "Plushify",
+    title: "Plushify - Transform Photos into Adorable Plushies",
     description:
-      "Complete agentic coding boilerplate with authentication, database, AI integration, and modern tooling",
+      "Transform your photos into adorable plushie versions with AI. Upload any image and get a cute, cuddly plushie rendition in seconds.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Agentic Coding Boilerplate",
+    title: "Plushify - Transform Photos into Adorable Plushies",
     description:
-      "Complete agentic coding boilerplate with authentication, database, AI integration, and modern tooling",
+      "Transform your photos into adorable plushie versions with AI. Upload any image and get a cute, cuddly plushie rendition in seconds.",
   },
   robots: {
     index: true,
@@ -55,23 +56,22 @@ export const metadata: Metadata = {
   },
 };
 
-// JSON-LD structured data for SEO
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "Agentic Coding Boilerplate",
+  name: "Plushify",
   description:
-    "Complete agentic coding boilerplate with authentication, database, AI integration, and modern tooling",
-  applicationCategory: "DeveloperApplication",
+    "Transform your photos into adorable plushie versions with AI. Upload any image and get a cute, cuddly plushie rendition in seconds.",
+  applicationCategory: "DesignApplication",
   operatingSystem: "Any",
   offers: {
     "@type": "Offer",
-    price: "0",
+    price: "9",
     priceCurrency: "USD",
   },
   author: {
-    "@type": "Person",
-    name: "Leon van Zyl",
+    "@type": "Organization",
+    name: "Plushify",
   },
 };
 
