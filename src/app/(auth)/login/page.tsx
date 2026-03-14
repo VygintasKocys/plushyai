@@ -25,10 +25,15 @@ export default async function LoginPage({
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md border-primary/20">
         <CardHeader className="text-center">
-          <CardTitle>Welcome back</CardTitle>
-          <CardDescription>Sign in to your account</CardDescription>
+          <div className="mx-auto mb-4">
+            <span className="text-3xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+              Plushify
+            </span>
+          </div>
+          <CardTitle>Welcome back to Plushify</CardTitle>
+          <CardDescription>Sign in to continue creating adorable plushies</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center">
           {reset === "success" && (

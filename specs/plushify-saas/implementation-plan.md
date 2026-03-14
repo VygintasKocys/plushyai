@@ -69,46 +69,46 @@ Establish the Plushify identity, create shared mock data, and configure brand co
 Rebrand all global components and create reusable shared UI pieces.
 
 ### Site Header
-- [ ] Rewrite `src/components/site-header.tsx`:
-  - [ ] Replace Bot icon and "Starter Kit" with Plushify logo using soft pastel gradient text
-  - [ ] Add public nav links: Home, Pricing, Docs
-  - [ ] Add signed-in nav links: Dashboard, Generate, Gallery (visible when mock signed-in)
-  - [ ] Keep ModeToggle and UserProfile dropdown
-  - [ ] Add mobile responsive hamburger menu (using Dialog or sheet pattern)
+- [x] Rewrite `src/components/site-header.tsx`:
+  - [x] Replace Bot icon and "Starter Kit" with Plushify logo using soft pastel gradient text
+  - [x] Add public nav links: Home, Pricing, Docs
+  - [x] Add signed-in nav links: Dashboard, Generate, Gallery (visible when mock signed-in)
+  - [x] Keep ModeToggle and UserProfile dropdown
+  - [x] Add mobile responsive hamburger menu (using Dialog or sheet pattern)
 
 ### User Profile Dropdown
-- [ ] Modify `src/components/auth/user-profile.tsx`:
-  - [ ] Add optional `mockMode` prop that bypasses `useSession` and renders using MOCK_USER
-  - [ ] Display credits badge in the dropdown menu
-  - [ ] Add "Generate" link in the dropdown menu pointing to /generate
+- [x] Modify `src/components/auth/user-profile.tsx`:
+  - [x] Add optional `mockMode` prop that bypasses `useSession` and renders using MOCK_USER
+  - [x] Display credits badge in the dropdown menu
+  - [x] Add "Generate" link in the dropdown menu pointing to /generate
 
 ### Site Footer
-- [ ] Rewrite `src/components/site-footer.tsx`:
-  - [ ] Plushify branding with tagline ("Transform your photos into adorable plushies")
-  - [ ] 4-column link layout: Product (Generate, Gallery, Pricing), Company (About, Blog — placeholder hrefs), Legal (Privacy, Terms), Support (Docs, Contact — placeholder href)
-  - [ ] Copyright line: "2026 Plushify. All rights reserved."
+- [x] Rewrite `src/components/site-footer.tsx`:
+  - [x] Plushify branding with tagline ("Transform your photos into adorable plushies")
+  - [x] 4-column link layout: Product (Generate, Gallery, Pricing), Company (About, Blog — placeholder hrefs), Legal (Privacy, Terms), Support (Docs, Contact — placeholder href)
+  - [x] Copyright line: "2026 Plushify. All rights reserved."
 
 ### Auth Page Restyling
-- [ ] Restyle `src/app/(auth)/login/page.tsx` — title: "Welcome back to Plushify", add Plushify logo, pastel card styling
-- [ ] Restyle `src/app/(auth)/register/page.tsx` — title: "Join Plushify", add tagline about plushie generation
-- [ ] Restyle `src/app/(auth)/forgot-password/page.tsx` — Plushify branding and pastel styling
-- [ ] Restyle `src/app/(auth)/reset-password/page.tsx` — Plushify branding and pastel styling
-- [ ] Update `src/components/auth/sign-in-button.tsx` — remove any boilerplate-specific text
-- [ ] Update `src/components/auth/sign-up-form.tsx` — remove any boilerplate-specific text
+- [x] Restyle `src/app/(auth)/login/page.tsx` — title: "Welcome back to Plushify", add Plushify logo, pastel card styling
+- [x] Restyle `src/app/(auth)/register/page.tsx` — title: "Join Plushify", add tagline about plushie generation
+- [x] Restyle `src/app/(auth)/forgot-password/page.tsx` — Plushify branding and pastel styling
+- [x] Restyle `src/app/(auth)/reset-password/page.tsx` — Plushify branding and pastel styling
+- [x] Update `src/components/auth/sign-in-button.tsx` — remove any boilerplate-specific text
+- [x] Update `src/components/auth/sign-up-form.tsx` — remove any boilerplate-specific text
 
 ### Shared Components
-- [ ] Create `src/components/gradient-placeholder.tsx`:
-  - [ ] Props: `fromColor`, `toColor`, `className`, `label` (optional overlay text)
-  - [ ] Renders a rounded div with CSS gradient background and optional centered label
-  - [ ] Supports aspect-ratio via className
-- [ ] Create `src/components/credit-badge.tsx`:
-  - [ ] Props: `credits`, `variant` ("inline" | "card")
-  - [ ] Displays credit count with a coin/star icon from lucide-react
-- [ ] Create `src/components/before-after-card.tsx`:
-  - [ ] Props: before gradient colors, after gradient colors, labels
-  - [ ] Side-by-side display with "Original" and "Plushified" labels
-  - [ ] Uses `GradientPlaceholder` internally
-- [ ] Run `pnpm lint && pnpm typecheck` to verify
+- [x] Create `src/components/gradient-placeholder.tsx`:
+  - [x] Props: `fromColor`, `toColor`, `className`, `label` (optional overlay text)
+  - [x] Renders a rounded div with CSS gradient background and optional centered label
+  - [x] Supports aspect-ratio via className
+- [x] Create `src/components/credit-badge.tsx`:
+  - [x] Props: `credits`, `variant` ("inline" | "card")
+  - [x] Displays credit count with a coin/star icon from lucide-react
+- [x] Create `src/components/before-after-card.tsx`:
+  - [x] Props: before gradient colors, after gradient colors, labels
+  - [x] Side-by-side display with "Original" and "Plushified" labels
+  - [x] Uses `GradientPlaceholder` internally
+- [x] Run `pnpm lint && pnpm typecheck` to verify
 
 ---
 
@@ -117,35 +117,35 @@ Rebrand all global components and create reusable shared UI pieces.
 Build all public-facing pages that don't require authentication.
 
 ### Landing Page
-- [ ] Rewrite `src/app/page.tsx` (convert to Server Component — remove "use client"):
-  - [ ] **Hero section**: Large heading "Turn Any Photo Into an Adorable Plushie", descriptive subtext, two CTA buttons ("Get Started Free" -> /register, "See Examples" -> #showcase), hero gradient placeholder showing before/after
-  - [ ] **Showcase section** (`id="showcase"`): Grid of 4-6 `BeforeAfterCard` components with varied gradient color pairs
-  - [ ] **Features section**: 3x2 grid with lucide icons — Sparkles (AI-Powered), Camera (Any Photo), Palette (Multiple Styles), Zap (High Quality), Clock (Fast Generation), Download (Download & Share)
-  - [ ] **How it Works section**: 3 numbered steps with icons — Upload (Upload icon), AI Transforms (Wand2 icon), Download (Download icon) — with connecting visual flow
-  - [ ] **Testimonials section**: 3 testimonial cards from TESTIMONIALS mock data with avatar initial, name, role, quote
-  - [ ] **Pricing preview section**: Brief heading with link to /pricing, optionally showing the 3 plan names and prices
-  - [ ] **Final CTA section**: "Ready to Plushify?" heading with "Get Started" button -> /register
+- [x] Rewrite `src/app/page.tsx` (convert to Server Component — remove "use client"):
+  - [x] **Hero section**: Large heading "Turn Any Photo Into an Adorable Plushie", descriptive subtext, two CTA buttons ("Get Started Free" -> /register, "See Examples" -> #showcase), hero gradient placeholder showing before/after
+  - [x] **Showcase section** (`id="showcase"`): Grid of 4-6 `BeforeAfterCard` components with varied gradient color pairs
+  - [x] **Features section**: 3x2 grid with lucide icons — Sparkles (AI-Powered), Camera (Any Photo), Palette (Multiple Styles), Zap (High Quality), Clock (Fast Generation), Download (Download & Share)
+  - [x] **How it Works section**: 3 numbered steps with icons — Upload (Upload icon), AI Transforms (Wand2 icon), Download (Download icon) — with connecting visual flow
+  - [x] **Testimonials section**: 3 testimonial cards from TESTIMONIALS mock data with avatar initial, name, role, quote
+  - [x] **Pricing preview section**: Brief heading with link to /pricing, optionally showing the 3 plan names and prices
+  - [x] **Final CTA section**: "Ready to Plushify?" heading with "Get Started" button -> /register
 
 ### Pricing Page
-- [ ] Create `src/app/pricing/page.tsx` (Server Component):
-  - [ ] Export metadata with title: "Pricing | Plushify"
-  - [ ] Page heading: "Simple, Credit-Based Pricing" with subtext explaining the credits model
-  - [ ] 3 pricing cards from PRICING_PLANS using shadcn Card component
-  - [ ] Pro plan highlighted with "Most Popular" badge and accent border/ring
-  - [ ] Each card: plan name, "$X/month", "Y credits" callout, feature list with check icons, CTA button ("Get Started" / "Go Pro" / "Go Elite")
-  - [ ] "How Credits Work" section: 3 bullet points (1 credit = 1 generation, credits reset monthly, unused credits don't roll over)
-  - [ ] FAQ section at bottom with 4-6 questions using expandable details/summary or custom accordion
+- [x] Create `src/app/pricing/page.tsx` (Server Component):
+  - [x] Export metadata with title: "Pricing | Plushify"
+  - [x] Page heading: "Simple, Credit-Based Pricing" with subtext explaining the credits model
+  - [x] 3 pricing cards from PRICING_PLANS using shadcn Card component
+  - [x] Pro plan highlighted with "Most Popular" badge and accent border/ring
+  - [x] Each card: plan name, "$X/month", "Y credits" callout, feature list with check icons, CTA button ("Get Started" / "Go Pro" / "Go Elite")
+  - [x] "How Credits Work" section: 3 bullet points (1 credit = 1 generation, credits reset monthly, unused credits don't roll over)
+  - [x] FAQ section at bottom with 4-6 questions using expandable details/summary or custom accordion
 
 ### Legal Pages
-- [ ] Create `src/app/privacy/page.tsx` (Server Component):
-  - [ ] Export metadata with title: "Privacy Policy | Plushify"
-  - [ ] Formatted privacy policy text with sections: Information We Collect, How We Use Information, Data Storage, Third-Party Services, Your Rights, Contact
-  - [ ] Prose-styled with proper heading hierarchy
-- [ ] Create `src/app/terms/page.tsx` (Server Component):
-  - [ ] Export metadata with title: "Terms of Service | Plushify"
-  - [ ] Formatted terms text with sections: Acceptance of Terms, Service Description, User Accounts, Credits and Payments, Intellectual Property, Limitation of Liability, Termination, Contact
-  - [ ] Prose-styled with proper heading hierarchy
-- [ ] Run `pnpm lint && pnpm typecheck` to verify
+- [x] Create `src/app/privacy/page.tsx` (Server Component):
+  - [x] Export metadata with title: "Privacy Policy | Plushify"
+  - [x] Formatted privacy policy text with sections: Information We Collect, How We Use Information, Data Storage, Third-Party Services, Your Rights, Contact
+  - [x] Prose-styled with proper heading hierarchy
+- [x] Create `src/app/terms/page.tsx` (Server Component):
+  - [x] Export metadata with title: "Terms of Service | Plushify"
+  - [x] Formatted terms text with sections: Acceptance of Terms, Service Description, User Accounts, Credits and Payments, Intellectual Property, Limitation of Liability, Termination, Contact
+  - [x] Prose-styled with proper heading hierarchy
+- [x] Run `pnpm lint && pnpm typecheck` to verify
 
 ---
 
