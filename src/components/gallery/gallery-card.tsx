@@ -22,6 +22,7 @@ export function GalleryCard({ item, onClick }: GalleryCardProps) {
     <button
       type="button"
       onClick={onClick}
+      aria-label={`View ${item.title}`}
       className="group rounded-lg border overflow-hidden text-left transition-all hover:ring-2 hover:ring-primary/20"
     >
       <div className="relative">

@@ -101,7 +101,7 @@ export default function PrivacyPage() {
             <p className="text-muted-foreground">
               If you have questions about this privacy policy or how we handle
               your data, please contact us at{" "}
-              <span className="text-primary">privacy@plushify.com</span>.
+              <a href="mailto:privacy@plushify.com" className="text-primary hover:underline">privacy@plushify.com</a>.
             </p>
           </section>
         </div>

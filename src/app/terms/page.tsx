@@ -109,7 +109,7 @@ export default function TermsPage() {
             <h2 className="text-xl font-semibold mb-3">Contact</h2>
             <p className="text-muted-foreground">
               For questions about these terms, please contact us at{" "}
-              <span className="text-primary">legal@plushify.com</span>.
+              <a href="mailto:legal@plushify.com" className="text-primary hover:underline">legal@plushify.com</a>.
             </p>
           </section>
         </div>

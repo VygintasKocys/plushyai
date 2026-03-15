@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Sparkles, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { GenerationResult } from "@/components/generate/generation-result";
@@ -27,21 +27,29 @@ export default function GeneratePage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedStyle, setSelectedStyle] = useState("classic");
   const [size, setSize] = useState("1024");
+  const [quality, setQuality] = useState("standard");
   const [isGenerating, setIsGenerating] = useState(false);
   const [showResult, setShowResult] = useState(false);
 
-  const handleFileSelect = useCallback((file: File) => {
+  // Revoke the preview URL on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleFileSelect = useCallback((file: File, url: string) => {
     setSelectedFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
+    setPreviewUrl(url);
     setShowResult(false);
   }, []);
 
   const handleClear = useCallback(() => {
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
     setSelectedFile(null);
     setPreviewUrl(null);
     setShowResult(false);
-  }, [previewUrl]);
+  }, []);
 
   const handleGenerate = useCallback(() => {
     if (!selectedFile) return;
@@ -53,13 +61,13 @@ export default function GeneratePage() {
   }, [selectedFile]);
 
   const handleReset = useCallback(() => {
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
     setSelectedFile(null);
     setPreviewUrl(null);
     setShowResult(false);
     setSelectedStyle("classic");
     setSize("1024");
-  }, [previewUrl]);
+    setQuality("standard");
+  }, []);
 
   return (
     <div className="container max-w-4xl mx-auto py-8 px-4">
@@ -131,7 +139,7 @@ export default function GeneratePage() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Quality</label>
-                  <Select defaultValue="standard">
+                  <Select value={quality} onValueChange={setQuality}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>

@@ -19,6 +19,7 @@ export function StyleSelector({
           key={style.id}
           type="button"
           onClick={() => onSelectStyle(style.id)}
+          aria-pressed={selectedStyle === style.id}
           className={cn(
             "rounded-lg border p-4 text-left transition-all hover:border-primary/50",
             selectedStyle === style.id

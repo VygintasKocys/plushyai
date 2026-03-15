@@ -49,7 +49,7 @@ export function SiteHeader() {
           aria-label="Main navigation"
         >
           <div className="flex items-center gap-8">
-            <h1 className="text-2xl font-bold">
+            <span className="text-2xl font-bold">
               <Link
                 href="/"
                 className="flex items-center gap-2 hover:opacity-80 transition-opacity"
@@ -59,7 +59,7 @@ export function SiteHeader() {
                   Plushify
                 </span>
               </Link>
-            </h1>
+            </span>
 
             {/* Desktop navigation */}
             <div className="hidden md:flex items-center gap-1">

@@ -166,16 +166,16 @@ gh project item-edit \
 
 ```bash
 # Step 7a: Comment on the issue
-gh issue comment 8 --repo leonvanzyl/json-anything --body "🚀 **Status Update**: Implementation started
+gh issue comment 8 --repo plushify/json-anything --body "🚀 **Status Update**: Implementation started
 
 Working on this task now..."
 
 # Step 7b: Get item ID (parse JSON to find item with content.number == 8)
-gh project item-list 3 --owner leonvanzyl --format json
+gh project item-list 3 --owner plushify --format json
 # Found: "id": "PVTI_lAHOBLPcNM4BJm9zzgh_JP0"
 
 # Step 7c: Get field IDs (find Status field and "In Progress" option)
-gh project field-list 3 --owner leonvanzyl --format json
+gh project field-list 3 --owner plushify --format json
 # Found Status field: "id": "PVTSSF_lAHOBLPcNM4BJm9zzg5uLNA"
 # Found "In Progress" option: "id": "47fc9ee4"
 

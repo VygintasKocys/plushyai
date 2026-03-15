@@ -1,3 +1,16 @@
+/** Number of plushie generations in the current calendar month. */
+export const MONTHLY_GENERATIONS = 8;
+
+/** Recent credit ledger entries shown on the profile page. */
+export const CREDIT_HISTORY = [
+  { date: "2026-03-12", description: "Plushie Generation", credits: -1, balance: 75 },
+  { date: "2026-03-11", description: "Plushie Generation", credits: -1, balance: 76 },
+  { date: "2026-03-10", description: "Plushie Generation", credits: -1, balance: 77 },
+  { date: "2026-03-01", description: "Pro Plan — 100 Credits", credits: 100, balance: 78 },
+  { date: "2026-02-28", description: "Plushie Generation", credits: -1, balance: 2 },
+  { date: "2026-02-15", description: "Plushie Generation", credits: -1, balance: 3 },
+];
+
 export const MOCK_USER = {
   name: "Jane Doe",
   email: "jane@example.com",

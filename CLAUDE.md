@@ -1,8 +1,8 @@
-# Agentic Coding Boilerplate - AI Assistant Guidelines
+# Plushify - AI Assistant Guidelines
 
 ## Project Overview
 
-This is a Next.js 16 boilerplate for building AI-powered applications with authentication, database, and modern UI components.
+This is a Next.js 16 SaaS application that converts user photos into adorable plushie versions, built with authentication, database, and modern UI components.
 
 ### Tech Stack
 

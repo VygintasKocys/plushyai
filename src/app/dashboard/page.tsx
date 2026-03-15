@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import {
   Sparkles,
@@ -18,7 +16,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { MOCK_USER, MOCK_GALLERY } from "@/lib/mock-data";
+import { MOCK_USER, MOCK_GALLERY, MONTHLY_GENERATIONS } from "@/lib/mock-data";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dashboard | Plushify",
+};
 
 const stats = [
   {
@@ -33,7 +36,7 @@ const stats = [
   },
   {
     label: "This Month",
-    value: "8",
+    value: MONTHLY_GENERATIONS.toString(),
     icon: CalendarDays,
   },
   {

@@ -40,12 +40,12 @@ If no folder is specified, ask the user which feature to publish.
 
 Run: `gh repo view --json nameWithOwner,owner -q '.nameWithOwner + " " + .owner.login'`
 
-This returns both values, e.g., `leonvanzyl/json-anything leonvanzyl`
+This returns both values, e.g., `plushify/json-anything plushify`
 
 Store the results as:
 
-- `{repository}` - Full repo name (e.g., `leonvanzyl/json-anything`)
-- `{owner}` - Repository owner (e.g., `leonvanzyl`)
+- `{repository}` - Full repo name (e.g., `plushify/json-anything`)
+- `{owner}` - Repository owner (e.g., `plushify`)
 
 ### 4. Create Labels (if they don't exist)
 

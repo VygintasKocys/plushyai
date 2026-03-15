@@ -15,16 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { MOCK_USER } from "@/lib/mock-data";
-
-const CREDIT_HISTORY = [
-  { date: "2026-03-12", description: "Plushie Generation", credits: -1, balance: 75 },
-  { date: "2026-03-11", description: "Plushie Generation", credits: -1, balance: 76 },
-  { date: "2026-03-10", description: "Plushie Generation", credits: -1, balance: 77 },
-  { date: "2026-03-01", description: "Pro Plan — 100 Credits", credits: 100, balance: 78 },
-  { date: "2026-02-28", description: "Plushie Generation", credits: -1, balance: -22 },
-  { date: "2026-02-15", description: "Plushie Generation", credits: -1, balance: -21 },
-];
+import { MOCK_USER, CREDIT_HISTORY } from "@/lib/mock-data";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -132,7 +123,7 @@ export default function ProfilePage() {
                         {new Date(entry.date).toLocaleDateString()}
                       </td>
                       <td className="py-2">{entry.description}</td>
-                      <td className={`py-2 text-right font-medium ${entry.credits > 0 ? "text-green-600" : ""}`}>
+                      <td className={`py-2 text-right font-medium ${entry.credits > 0 ? "text-green-600 dark:text-green-400" : ""}`}>
                         {entry.credits > 0 ? `+${entry.credits}` : entry.credits}
                       </td>
                       <td className="py-2 text-right">{entry.balance}</td>
