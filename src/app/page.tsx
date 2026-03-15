@@ -10,6 +10,7 @@ import {
   Wand2,
 } from "lucide-react";
 import { BeforeAfterCard } from "@/components/before-after-card";
+import { BeforeAfterSlider } from "@/components/before-after-slider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MOCK_GALLERY, TESTIMONIALS, PRICING_PLANS } from "@/lib/mock-data";
@@ -75,7 +76,7 @@ export default function Home() {
         <div className="max-w-3xl mx-auto space-y-6">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
             Turn Any Photo Into an{" "}
-            <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-500 bg-clip-text text-transparent">
               Adorable Plushie
             </span>
           </h1>
@@ -92,13 +93,16 @@ export default function Home() {
             </Button>
           </div>
         </div>
-        <div className="mt-16 max-w-md mx-auto">
-          <BeforeAfterCard
-            beforeFrom="#f9a8d4"
-            beforeTo="#f472b6"
-            afterFrom="#fbbf24"
-            afterTo="#f59e0b"
+        <div className="mt-16 max-w-lg mx-auto">
+          <BeforeAfterSlider
+            beforeSrc="/example/before.jpg"
+            afterSrc="/example/after.png"
+            beforeAlt="Original photo of two friends laughing"
+            afterAlt="Plushie version of two friends"
           />
+          <p className="mt-3 text-sm text-muted-foreground">
+            Drag the slider to see the transformation
+          </p>
         </div>
       </section>
 

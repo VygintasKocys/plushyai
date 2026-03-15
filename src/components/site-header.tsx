@@ -55,7 +55,7 @@ export function SiteHeader() {
                 className="flex items-center gap-2 hover:opacity-80 transition-opacity"
                 aria-label="Plushify - Go to homepage"
               >
-                <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-500 bg-clip-text text-transparent">
                   Plushify
                 </span>
               </Link>
@@ -101,7 +101,7 @@ export function SiteHeader() {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-72">
                   <SheetHeader>
-                    <SheetTitle className="bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                    <SheetTitle className="bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-500 bg-clip-text text-transparent">
                       Plushify
                     </SheetTitle>
                   </SheetHeader>

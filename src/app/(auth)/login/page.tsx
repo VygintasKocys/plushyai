@@ -28,7 +28,7 @@ export default async function LoginPage({
       <Card className="w-full max-w-md border-primary/20">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4">
-            <span className="text-3xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+            <span className="text-3xl font-bold bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-500 bg-clip-text text-transparent">
               Plushify
             </span>
           </div>

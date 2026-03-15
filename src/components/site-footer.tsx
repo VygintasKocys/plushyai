@@ -27,7 +27,7 @@ export function SiteFooter() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <span className="text-lg font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+            <span className="text-lg font-bold bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-500 bg-clip-text text-transparent">
               Plushify
             </span>
             <p className="mt-2 text-sm text-muted-foreground">
