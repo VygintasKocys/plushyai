@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { UserProfile } from "@/components/auth/user-profile";
+import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { ModeToggle } from "./ui/mode-toggle";
@@ -28,12 +29,19 @@ const signedInLinks = [
   { href: "/gallery", label: "Gallery" },
 ];
 
+const adminLinks = [{ href: "/admin", label: "Admin" }];
+
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { data: session } = useSession();
 
-  // For now, show signed-in links (mock mode)
-  const allLinks = [...publicLinks, ...signedInLinks];
+  const isAdmin = session?.user?.role?.trim() === "admin";
+  const allLinks = [
+    ...publicLinks,
+    ...(session ? signedInLinks : []),
+    ...(isAdmin ? adminLinks : []),
+  ];
 
   return (
     <>

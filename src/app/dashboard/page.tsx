@@ -16,7 +16,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { MOCK_USER, MOCK_GALLERY, MONTHLY_GENERATIONS } from "@/lib/mock-data";
+import { MOCK_GALLERY, MONTHLY_GENERATIONS } from "@/lib/mock-data";
+import { requireAuth } from "@/lib/session";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -26,12 +27,12 @@ export const metadata: Metadata = {
 const stats = [
   {
     label: "Credits Remaining",
-    value: `${MOCK_USER.credits}/100`,
+    value: "0/0",
     icon: Sparkles,
   },
   {
     label: "Total Generations",
-    value: MOCK_USER.totalGenerations.toString(),
+    value: "0",
     icon: ImageIcon,
   },
   {
@@ -41,25 +42,28 @@ const stats = [
   },
   {
     label: "Plan",
-    value: MOCK_USER.plan,
+    value: "Free",
     icon: Crown,
   },
 ];
 
 const recentItems = MOCK_GALLERY.slice(0, 4);
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const session = await requireAuth();
+  const firstName = session.user.name?.split(" ")[0] || "there";
+
   return (
     <div className="container max-w-6xl mx-auto py-8 px-4">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold">
-            Welcome back, {MOCK_USER.name.split(" ")[0]}!
+            Welcome back, {firstName}!
           </h1>
           <div className="flex items-center gap-2 mt-1">
             <Badge variant="secondary" className="font-medium">
               <Crown className="h-3 w-3 mr-1" />
-              {MOCK_USER.plan} Plan
+              Free Plan
             </Badge>
           </div>
         </div>
@@ -97,11 +101,11 @@ export default function DashboardPage() {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                {MOCK_USER.credits} of 100 credits remaining
+                0 of 0 credits remaining
               </span>
-              <span className="font-medium">{MOCK_USER.credits}%</span>
+              <span className="font-medium">0%</span>
             </div>
-            <Progress value={MOCK_USER.credits} />
+            <Progress value={0} />
           </div>
         </CardContent>
       </Card>

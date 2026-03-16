@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Sparkles, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { GenerationResult } from "@/components/generate/generation-result";
@@ -20,9 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MOCK_USER } from "@/lib/mock-data";
+import { useSession } from "@/lib/auth-client";
 
 export default function GeneratePage() {
+  const { data: session, isPending } = useSession();
+  const router = useRouter();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedStyle, setSelectedStyle] = useState("classic");
@@ -30,6 +33,12 @@ export default function GeneratePage() {
   const [quality, setQuality] = useState("standard");
   const [isGenerating, setIsGenerating] = useState(false);
   const [showResult, setShowResult] = useState(false);
+
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.replace("/login");
+    }
+  }, [isPending, session, router]);
 
   // Revoke the preview URL on unmount to prevent memory leaks
   useEffect(() => {
@@ -68,6 +77,15 @@ export default function GeneratePage() {
     setSize("1024");
     setQuality("standard");
   }, []);
+
+  if (isPending || !session) {
+    return (
+      <div className="container max-w-4xl mx-auto py-8 px-4">
+        <div className="h-8 w-48 bg-muted animate-pulse rounded mb-4" />
+        <div className="h-4 w-72 bg-muted animate-pulse rounded" />
+      </div>
+    );
+  }
 
   return (
     <div className="container max-w-4xl mx-auto py-8 px-4">
@@ -157,8 +175,7 @@ export default function GeneratePage() {
             <CardContent className="pt-6">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <p className="text-sm text-muted-foreground">
-                  This will use <strong>1 credit</strong>. You have{" "}
-                  <strong>{MOCK_USER.credits} remaining</strong>.
+                  This will use <strong>1 credit</strong>.
                 </p>
                 <Button
                   size="lg"

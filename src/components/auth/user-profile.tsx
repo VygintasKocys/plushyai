@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { User, LogOut, Wand2 } from "lucide-react";
-import { CreditBadge } from "@/components/credit-badge";
+import { toast } from "sonner";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,27 +15,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSession, signOut } from "@/lib/auth-client";
-import { MOCK_USER } from "@/lib/mock-data";
 
-interface UserProfileProps {
-  mockMode?: boolean;
-}
-
-export function UserProfile({ mockMode = false }: UserProfileProps) {
+export function UserProfile() {
   const { data: session, isPending } = useSession();
   const router = useRouter();
 
-  const useMock = mockMode;
-  const user = useMock
-    ? { name: MOCK_USER.name, email: MOCK_USER.email, image: MOCK_USER.image }
-    : session?.user;
-  const credits = MOCK_USER.credits;
-
-  if (!useMock && isPending) {
+  if (isPending) {
     return <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />;
   }
 
-  if (!useMock && !session) {
+  if (!session) {
     return (
       <div className="flex items-center gap-2">
         <Link href="/login">
@@ -50,12 +39,16 @@ export function UserProfile({ mockMode = false }: UserProfileProps) {
     );
   }
 
+  const user = session.user;
+
   const handleSignOut = async () => {
-    if (!useMock) {
+    try {
       await signOut();
+      router.replace("/");
+      router.refresh();
+    } catch {
+      toast.error("Failed to sign out. Please try again.");
     }
-    router.replace("/");
-    router.refresh();
   };
 
   return (
@@ -63,23 +56,22 @@ export function UserProfile({ mockMode = false }: UserProfileProps) {
       <DropdownMenuTrigger asChild>
         <Avatar className="size-8 cursor-pointer hover:opacity-80 transition-opacity">
           <AvatarImage
-            src={user?.image || ""}
-            alt={user?.name || "User"}
+            src={user.image ?? undefined}
+            alt={user.name || "User"}
             referrerPolicy="no-referrer"
           />
           <AvatarFallback>
-            {(user?.name?.[0] || user?.email?.[0] || "U").toUpperCase()}
+            {(user.name?.[0] || user.email?.[0] || "U").toUpperCase()}
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-2">
-            <p className="text-sm font-medium leading-none">{user?.name}</p>
+            <p className="text-sm font-medium leading-none">{user.name}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              {user?.email}
+              {user.email}
             </p>
-            <CreditBadge credits={credits} />
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
