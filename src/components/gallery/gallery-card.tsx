@@ -1,15 +1,16 @@
 "use client";
 
-import { GradientPlaceholder } from "@/components/gradient-placeholder";
 import { Badge } from "@/components/ui/badge";
+import { PLUSHIE_STYLES } from "@/lib/mock-data";
 
-interface GalleryItem {
+export interface GalleryItem {
   id: string;
   title: string;
   style: string;
-  createdAt: string;
-  afterFrom: string;
-  afterTo: string;
+  createdAt: Date;
+  creditCost: number;
+  originalImageUrl: string;
+  generatedImageUrl: string;
 }
 
 interface GalleryCardProps {
@@ -18,30 +19,35 @@ interface GalleryCardProps {
 }
 
 export function GalleryCard({ item, onClick }: GalleryCardProps) {
+  const styleName =
+    PLUSHIE_STYLES.find((s) => s.id === item.style)?.name ?? item.style;
+
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={`View ${item.title}`}
-      className="group rounded-lg border overflow-hidden text-left transition-all hover:ring-2 hover:ring-primary/20"
+      className="group overflow-hidden rounded-lg border text-left transition-all hover:ring-2 hover:ring-primary/20"
     >
       <div className="relative">
-        <GradientPlaceholder
-          fromColor={item.afterFrom}
-          toColor={item.afterTo}
-          className="aspect-square"
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={item.generatedImageUrl}
+          alt={item.title}
+          className="aspect-square w-full object-cover"
+          loading="lazy"
         />
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-          <span className="text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/40">
+          <span className="rounded-full bg-white/20 px-4 py-2 text-sm font-medium text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
             View
           </span>
         </div>
       </div>
       <div className="p-3">
-        <p className="text-sm font-medium truncate">{item.title}</p>
-        <div className="flex items-center justify-between mt-1">
+        <p className="truncate text-sm font-medium">{item.title}</p>
+        <div className="mt-1 flex items-center justify-between">
           <Badge variant="secondary" className="text-xs">
-            {item.style}
+            {styleName}
           </Badge>
           <span className="text-xs text-muted-foreground">
             {new Date(item.createdAt).toLocaleDateString()}

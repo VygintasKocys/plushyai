@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, integer, uuid, index } from "drizzle-orm/pg-core";
 
 // IMPORTANT! ID fields should ALWAYS use UUID types, EXCEPT the BetterAuth tables.
 
@@ -15,6 +15,7 @@ export const user = pgTable(
     banned: boolean("banned").default(false),
     banReason: text("ban_reason"),
     banExpires: timestamp("ban_expires"),
+    credits: integer("credits").default(3).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -72,6 +73,23 @@ export const account = pgTable(
     index("account_user_id_idx").on(table.userId),
     index("account_provider_account_idx").on(table.providerId, table.accountId),
   ]
+);
+
+export const generation = pgTable(
+  "generation",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    style: text("style").notNull(),
+    originalImageUrl: text("original_image_url").notNull(),
+    generatedImageUrl: text("generated_image_url").notNull(),
+    creditCost: integer("credit_cost").default(1).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("generation_user_id_idx").on(table.userId)]
 );
 
 export const verification = pgTable("verification", {

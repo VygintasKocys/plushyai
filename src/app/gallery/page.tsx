@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import type { GalleryItem } from "@/components/gallery/gallery-card";
 import { GalleryCard } from "@/components/gallery/gallery-card";
 import { GalleryDetailModal } from "@/components/gallery/gallery-detail-modal";
 import { Badge } from "@/components/ui/badge";
@@ -11,34 +13,73 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MOCK_GALLERY, PLUSHIE_STYLES } from "@/lib/mock-data";
+import { useSession } from "@/lib/auth-client";
+import { PLUSHIE_STYLES } from "@/lib/mock-data";
+import { getGalleryItems } from "./actions";
 
 type SortOrder = "newest" | "oldest";
 
 export default function GalleryPage() {
+  const { data: session, isPending } = useSession();
+  const router = useRouter();
+  const [items, setItems] = useState<GalleryItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [styleFilter, setStyleFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
-  const [selectedItem, setSelectedItem] = useState<
-    (typeof MOCK_GALLERY)[number] | null
-  >(null);
+  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
+
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.replace("/login");
+    }
+  }, [isPending, session, router]);
+
+  const fetchItems = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const result = await getGalleryItems();
+      if ("error" in result) return;
+      setItems(result.items);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (session) {
+      fetchItems();
+    }
+  }, [session, fetchItems]);
 
   const filteredItems = useMemo(() => {
-    let items = [...MOCK_GALLERY];
+    let filtered = [...items];
     if (styleFilter !== "all") {
-      const styleName = PLUSHIE_STYLES.find((s) => s.id === styleFilter)?.name;
-      items = items.filter((item) => item.style === styleName);
+      filtered = filtered.filter((item) => item.style === styleFilter);
     }
-    items.sort((a, b) => {
+    filtered.sort((a, b) => {
       const da = new Date(a.createdAt).getTime();
       const db = new Date(b.createdAt).getTime();
       return sortOrder === "newest" ? db - da : da - db;
     });
-    return items;
-  }, [styleFilter, sortOrder]);
+    return filtered;
+  }, [items, styleFilter, sortOrder]);
+
+  if (isPending || !session) {
+    return (
+      <div className="container mx-auto max-w-6xl px-4 py-8">
+        <div className="mb-6 h-8 w-48 animate-pulse rounded bg-muted" />
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="aspect-square animate-pulse rounded-lg bg-muted" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="container max-w-6xl mx-auto py-8 px-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div className="container mx-auto max-w-6xl px-4 py-8">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-3xl font-bold">Your Gallery</h1>
           <Badge variant="secondary">{filteredItems.length} items</Badge>
@@ -72,12 +113,24 @@ export default function GalleryPage() {
         </div>
       </div>
 
-      {filteredItems.length === 0 ? (
-        <div className="text-center py-20 text-muted-foreground">
-          <p className="text-lg">No items match your filter.</p>
+      {isLoading ? (
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="aspect-square animate-pulse rounded-lg bg-muted" />
+          ))}
+        </div>
+      ) : filteredItems.length === 0 ? (
+        <div className="py-20 text-center text-muted-foreground">
+          {items.length === 0 ? (
+            <p className="text-lg">
+              No plushie generations yet. Go create your first one!
+            </p>
+          ) : (
+            <p className="text-lg">No items match your filter.</p>
+          )}
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {filteredItems.map((item) => (
             <GalleryCard
               key={item.id}
@@ -92,6 +145,7 @@ export default function GalleryPage() {
         item={selectedItem}
         open={selectedItem !== null}
         onClose={() => setSelectedItem(null)}
+        onDelete={fetchItems}
       />
     </div>
   );

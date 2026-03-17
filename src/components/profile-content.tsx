@@ -23,9 +23,11 @@ interface ProfileContentProps {
     image: string | null | undefined;
     createdAt: string;
   };
+  credits: number;
+  totalGenerations: number;
 }
 
-export function ProfileContent({ user }: ProfileContentProps) {
+export function ProfileContent({ user, credits, totalGenerations }: ProfileContentProps) {
   const router = useRouter();
 
   const memberDate = new Date(user.createdAt).toLocaleDateString("en-US", {
@@ -101,9 +103,13 @@ export function ProfileContent({ user }: ProfileContentProps) {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Credits remaining</span>
-                <span className="font-medium">0 / 0</span>
+                <span className="font-medium">{credits}</span>
               </div>
-              <Progress value={0} />
+              <Progress value={credits > 0 ? Math.min(100, (credits / 3) * 100) : 0} />
+            </div>
+            <div className="flex justify-between text-sm">
+              <span>Total generations</span>
+              <span className="font-medium">{totalGenerations}</span>
             </div>
           </CardContent>
         </Card>

@@ -95,10 +95,10 @@ export default function Home() {
         </div>
         <div className="mt-16 max-w-lg mx-auto">
           <BeforeAfterSlider
-            beforeSrc="/example/before.jpg"
-            afterSrc="/example/after.png"
-            beforeAlt="Original photo of two friends laughing"
-            afterAlt="Plushie version of two friends"
+            beforeImageUrl="/example/before.jpg"
+            afterImageUrl="/example/after.png"
+            beforeLabel="Before"
+            afterLabel="After"
           />
           <p className="mt-3 text-sm text-muted-foreground">
             Drag the slider to see the transformation

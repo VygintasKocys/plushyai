@@ -14,14 +14,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useSession } from "@/lib/auth-client";
+import { generatePlushie } from "./actions";
+
+interface GeneratedResult {
+  originalImageUrl: string;
+  generatedImageUrl: string;
+}
 
 export default function GeneratePage() {
   const { data: session, isPending } = useSession();
@@ -29,10 +28,9 @@ export default function GeneratePage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedStyle, setSelectedStyle] = useState("classic");
-  const [size, setSize] = useState("1024");
-  const [quality, setQuality] = useState("standard");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [showResult, setShowResult] = useState(false);
+  const [generatedResult, setGeneratedResult] =
+    useState<GeneratedResult | null>(null);
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -40,72 +38,120 @@ export default function GeneratePage() {
     }
   }, [isPending, session, router]);
 
-  // Revoke the preview URL on unmount to prevent memory leaks
-  useEffect(() => {
-    return () => {
+  const handleFileSelect = useCallback(
+    (file: File, url: string) => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleFileSelect = useCallback((file: File, url: string) => {
-    setSelectedFile(file);
-    setPreviewUrl(url);
-    setShowResult(false);
-  }, []);
+      setSelectedFile(file);
+      setPreviewUrl(url);
+      setGeneratedResult(null);
+    },
+    [previewUrl]
+  );
 
   const handleClear = useCallback(() => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
     setSelectedFile(null);
     setPreviewUrl(null);
-    setShowResult(false);
-  }, []);
+    setGeneratedResult(null);
+  }, [previewUrl]);
 
-  const handleGenerate = useCallback(() => {
+  const handleGenerate = useCallback(async () => {
     if (!selectedFile) return;
     setIsGenerating(true);
-    setTimeout(() => {
+
+    try {
+      const formData = new FormData();
+      formData.append("style", selectedStyle);
+      formData.append("imageFile", selectedFile);
+
+      const result = await generatePlushie(formData);
+
+      if ("error" in result) {
+        switch (result.error) {
+          case "unauthorized":
+            router.replace("/login");
+            return;
+          case "insufficient_credits":
+            toast.error(
+              "Insufficient credits! Please purchase more credits to continue generating."
+            );
+            return;
+          case "generation_failed":
+            toast.error("Image generation failed. Please try again.");
+            return;
+          case "validation_failed":
+            toast.error("Invalid input. Please check your file and try again.");
+            return;
+        }
+      }
+
+      if ("success" in result && result.generation) {
+        setGeneratedResult({
+          originalImageUrl: result.generation.originalImageUrl,
+          generatedImageUrl: result.generation.generatedImageUrl,
+        });
+      }
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
       setIsGenerating(false);
-      setShowResult(true);
-    }, 2000);
-  }, [selectedFile]);
+    }
+  }, [selectedFile, selectedStyle, router]);
+
+  const handleDownload = useCallback(async () => {
+    if (!generatedResult) return;
+    try {
+      const response = await fetch(generatedResult.generatedImageUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "plushified.png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error("Download failed. Please try again.");
+    }
+  }, [generatedResult]);
 
   const handleReset = useCallback(() => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
     setSelectedFile(null);
     setPreviewUrl(null);
-    setShowResult(false);
+    setGeneratedResult(null);
     setSelectedStyle("classic");
-    setSize("1024");
-    setQuality("standard");
-  }, []);
+  }, [previewUrl]);
 
   if (isPending || !session) {
     return (
-      <div className="container max-w-4xl mx-auto py-8 px-4">
-        <div className="h-8 w-48 bg-muted animate-pulse rounded mb-4" />
-        <div className="h-4 w-72 bg-muted animate-pulse rounded" />
+      <div className="container mx-auto max-w-4xl px-4 py-8">
+        <div className="mb-4 h-8 w-48 animate-pulse rounded bg-muted" />
+        <div className="h-4 w-72 animate-pulse rounded bg-muted" />
       </div>
     );
   }
 
   return (
-    <div className="container max-w-4xl mx-auto py-8 px-4">
+    <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Generate a Plushie</h1>
+        <h1 className="mb-2 text-3xl font-bold">Generate a Plushie</h1>
         <p className="text-muted-foreground">
           Upload a photo and transform it into an adorable plushie version
         </p>
       </div>
 
-      {showResult && previewUrl ? (
+      {generatedResult ? (
         <Card>
           <CardHeader>
             <CardTitle>Your Plushie is Ready!</CardTitle>
           </CardHeader>
           <CardContent>
             <GenerationResult
-              beforeImageUrl={previewUrl}
-              onSave={() => toast.success("Saved to gallery!")}
-              onDownload={() => toast.info("Download started")}
+              beforeImageUrl={generatedResult.originalImageUrl}
+              afterImageUrl={generatedResult.generatedImageUrl}
+              onDownload={handleDownload}
               onReset={handleReset}
             />
           </CardContent>
@@ -138,42 +184,8 @@ export default function GeneratePage() {
           </Card>
 
           <Card>
-            <CardHeader>
-              <CardTitle>3. Settings</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Size</label>
-                  <Select value={size} onValueChange={setSize}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="512">512 x 512</SelectItem>
-                      <SelectItem value="1024">1024 x 1024</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Quality</label>
-                  <Select value={quality} onValueChange={setQuality}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="standard">Standard</SelectItem>
-                      <SelectItem value="hd">HD</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
             <CardContent className="pt-6">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
                 <p className="text-sm text-muted-foreground">
                   This will use <strong>1 credit</strong>.
                 </p>
@@ -184,12 +196,12 @@ export default function GeneratePage() {
                 >
                   {isGenerating ? (
                     <>
-                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                       Generating...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5 mr-2" />
+                      <Sparkles className="mr-2 h-5 w-5" />
                       Generate Plushie
                     </>
                   )}

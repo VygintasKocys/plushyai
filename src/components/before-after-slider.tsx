@@ -1,22 +1,21 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface BeforeAfterSliderProps {
-  beforeSrc: string;
-  afterSrc: string;
-  beforeAlt?: string;
-  afterAlt?: string;
+  beforeImageUrl: string;
+  afterImageUrl: string;
+  beforeLabel?: string;
+  afterLabel?: string;
   className?: string;
 }
 
 export function BeforeAfterSlider({
-  beforeSrc,
-  afterSrc,
-  beforeAlt = "Original photo",
-  afterAlt = "Plushified version",
+  beforeImageUrl,
+  afterImageUrl,
+  beforeLabel = "Original",
+  afterLabel = "Plushified",
   className,
 }: BeforeAfterSliderProps) {
   const [sliderPosition, setSliderPosition] = useState(50);
@@ -64,47 +63,44 @@ export function BeforeAfterSlider({
     <div
       ref={containerRef}
       className={cn(
-        "relative select-none overflow-hidden rounded-2xl cursor-col-resize shadow-2xl",
+        "relative cursor-col-resize select-none overflow-hidden rounded-2xl shadow-2xl",
         className
       )}
+      style={{ touchAction: "none" }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
     >
       {/* After image (full, underneath) */}
-      <div className="relative aspect-[4/3] w-full">
-        <Image
-          src={afterSrc}
-          alt={afterAlt}
-          fill
-          className="object-cover"
-          sizes="(max-width: 640px) 100vw, 500px"
-          priority
-        />
-      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={afterImageUrl}
+        alt={afterLabel}
+        className="block h-auto w-full"
+        draggable={false}
+      />
 
       {/* Before image (clipped) */}
       <div
         className="absolute inset-0"
         style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
       >
-        <Image
-          src={beforeSrc}
-          alt={beforeAlt}
-          fill
-          className="object-cover"
-          sizes="(max-width: 640px) 100vw, 500px"
-          priority
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={beforeImageUrl}
+          alt={beforeLabel}
+          className="block h-full w-full object-cover"
+          draggable={false}
         />
       </div>
 
       {/* Slider line */}
       <div
-        className="absolute top-0 bottom-0 w-0.5 bg-white shadow-lg z-10"
+        className="absolute top-0 bottom-0 z-10 w-0.5 bg-white shadow-lg"
         style={{ left: `${sliderPosition}%`, transform: "translateX(-50%)" }}
       >
         {/* Slider handle */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center">
+        <div className="absolute top-1/2 left-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg">
           <svg
             width="20"
             height="20"
@@ -132,16 +128,16 @@ export function BeforeAfterSlider({
 
       {/* Labels */}
       <div
-        className="absolute top-3 left-3 z-10 px-2.5 py-1 rounded-full bg-black/60 text-white text-xs font-medium backdrop-blur-sm transition-opacity"
+        className="absolute top-3 left-3 z-10 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm transition-opacity"
         style={{ opacity: sliderPosition > 15 ? 1 : 0 }}
       >
-        Before
+        {beforeLabel}
       </div>
       <div
-        className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-full bg-black/60 text-white text-xs font-medium backdrop-blur-sm transition-opacity"
+        className="absolute top-3 right-3 z-10 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm transition-opacity"
         style={{ opacity: sliderPosition < 85 ? 1 : 0 }}
       >
-        After
+        {afterLabel}
       </div>
     </div>
   );
