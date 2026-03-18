@@ -38,7 +38,7 @@ export function GalleryDetailModal({
 
   const handleDownload = async () => {
     try {
-      const response = await fetch(item.generatedImageUrl);
+      const response = await fetch(item.generatedImageUrl!);
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -84,7 +84,7 @@ export function GalleryDetailModal({
         </DialogHeader>
         <BeforeAfterSlider
           beforeImageUrl={item.originalImageUrl}
-          afterImageUrl={item.generatedImageUrl}
+          afterImageUrl={item.generatedImageUrl!}
         />
         <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
           <Badge variant="secondary">{styleName}</Badge>

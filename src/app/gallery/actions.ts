@@ -18,7 +18,12 @@ export async function getGalleryItems() {
   const items = await db
     .select()
     .from(generation)
-    .where(eq(generation.userId, session.user.id))
+    .where(
+      and(
+        eq(generation.userId, session.user.id),
+        eq(generation.status, "completed")
+      )
+    )
     .orderBy(desc(generation.createdAt));
 
   return { items };
@@ -52,10 +57,11 @@ export async function deleteGalleryItem(generationId: string) {
     .where(eq(generation.id, generationId));
 
   // Best-effort storage cleanup — don't fail the request if files are already gone
-  await Promise.allSettled([
-    deleteFile(record.originalImageUrl),
-    deleteFile(record.generatedImageUrl),
-  ]);
+  const filesToDelete = [deleteFile(record.originalImageUrl)];
+  if (record.generatedImageUrl) {
+    filesToDelete.push(deleteFile(record.generatedImageUrl));
+  }
+  await Promise.allSettled(filesToDelete);
 
   return { success: true as const };
 }

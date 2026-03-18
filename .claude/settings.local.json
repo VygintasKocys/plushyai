@@ -16,7 +16,9 @@
       "Bash(cat:*)",
       "Bash(npx tsc:*)",
       "mcp__context7__query-docs",
-      "Bash(pnpm run:*)"
+      "Bash(pnpm run:*)",
+      "Bash(grep -r \"api.*generate\\\\|generate.*api\\\\|POST.*generate\" /c/claude-code/plushify/src --include=*.ts --include=*.tsx)",
+      "Bash(grep -r \"OPENROUTER\\\\|openrouter\" /c/claude-code/plushify --include=*.ts --include=*.tsx --include=*.json)"
     ]
   },
   "enableAllProjectMcpServers": true,

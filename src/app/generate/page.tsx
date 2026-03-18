@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles, Loader2, Clock, Cpu } from "lucide-react";
 import { toast } from "sonner";
 import { GenerationResult } from "@/components/generate/generation-result";
 import { StyleSelector } from "@/components/generate/style-selector";
@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/card";
 import { useSession } from "@/lib/auth-client";
 import { generatePlushie } from "./actions";
+
+type GenerationStatus = "pending" | "processing" | "completed" | "failed";
 
 interface GeneratedResult {
   originalImageUrl: string;
@@ -31,12 +33,74 @@ export default function GeneratePage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedResult, setGeneratedResult] =
     useState<GeneratedResult | null>(null);
+  const [generationId, setGenerationId] = useState<string | null>(null);
+  const [generationStatus, setGenerationStatus] =
+    useState<GenerationStatus | null>(null);
+  const pollingRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!isPending && !session) {
       router.replace("/login");
     }
   }, [isPending, session, router]);
+
+  // Poll for generation status using recursive timeout to prevent overlapping requests
+  useEffect(() => {
+    if (
+      !generationId ||
+      !generationStatus ||
+      generationStatus === "completed" ||
+      generationStatus === "failed"
+    ) {
+      return;
+    }
+
+    let cancelled = false;
+
+    async function poll() {
+      if (cancelled) return;
+      try {
+        const res = await fetch(`/api/generation/${generationId}`);
+        if (!res.ok || cancelled) return;
+
+        const data = await res.json();
+        if (cancelled) return;
+
+        setGenerationStatus(data.status);
+
+        if (data.status === "completed" && data.generatedImageUrl) {
+          setGeneratedResult({
+            originalImageUrl: data.originalImageUrl,
+            generatedImageUrl: data.generatedImageUrl,
+          });
+          setIsGenerating(false);
+          setGenerationId(null);
+          return;
+        } else if (data.status === "failed") {
+          toast.error(data.errorMessage ?? "Generation failed. Please try again.");
+          setIsGenerating(false);
+          setGenerationId(null);
+          return;
+        }
+      } catch {
+        // Silently ignore polling errors — will retry on next tick
+      }
+
+      if (!cancelled) {
+        pollingRef.current = setTimeout(poll, 2000);
+      }
+    }
+
+    pollingRef.current = setTimeout(poll, 2000);
+
+    return () => {
+      cancelled = true;
+      if (pollingRef.current) {
+        clearTimeout(pollingRef.current);
+        pollingRef.current = null;
+      }
+    };
+  }, [generationId, generationStatus]);
 
   const handleFileSelect = useCallback(
     (file: File, url: string) => {
@@ -58,6 +122,8 @@ export default function GeneratePage() {
   const handleGenerate = useCallback(async () => {
     if (!selectedFile) return;
     setIsGenerating(true);
+    setGenerationStatus(null);
+    setGenerationId(null);
 
     try {
       const formData = new FormData();
@@ -67,6 +133,7 @@ export default function GeneratePage() {
       const result = await generatePlushie(formData);
 
       if ("error" in result) {
+        setIsGenerating(false);
         switch (result.error) {
           case "unauthorized":
             router.replace("/login");
@@ -85,15 +152,12 @@ export default function GeneratePage() {
         }
       }
 
-      if ("success" in result && result.generation) {
-        setGeneratedResult({
-          originalImageUrl: result.generation.originalImageUrl,
-          generatedImageUrl: result.generation.generatedImageUrl,
-        });
+      if ("success" in result && result.generationId) {
+        setGenerationId(result.generationId);
+        setGenerationStatus("pending");
       }
     } catch {
       toast.error("Something went wrong. Please try again.");
-    } finally {
       setIsGenerating(false);
     }
   }, [selectedFile, selectedStyle, router]);
@@ -121,6 +185,8 @@ export default function GeneratePage() {
     setSelectedFile(null);
     setPreviewUrl(null);
     setGeneratedResult(null);
+    setGenerationId(null);
+    setGenerationStatus(null);
     setSelectedStyle("classic");
   }, [previewUrl]);
 
@@ -154,6 +220,36 @@ export default function GeneratePage() {
               onDownload={handleDownload}
               onReset={handleReset}
             />
+          </CardContent>
+        </Card>
+      ) : isGenerating && generationStatus ? (
+        <Card>
+          <CardContent className="py-12">
+            <div className="flex flex-col items-center gap-4 text-center">
+              {generationStatus === "pending" ? (
+                <>
+                  <Clock className="h-10 w-10 animate-pulse text-muted-foreground" />
+                  <div>
+                    <p className="text-lg font-medium">Your plushie is queued...</p>
+                    <p className="text-sm text-muted-foreground">
+                      Waiting for an available slot
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Cpu className="h-10 w-10 animate-spin text-primary" />
+                  <div>
+                    <p className="text-lg font-medium">
+                      AI is generating your plushie...
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      This usually takes 10–30 seconds
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
           </CardContent>
         </Card>
       ) : (

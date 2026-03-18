@@ -10,7 +10,7 @@ export interface GalleryItem {
   createdAt: Date;
   creditCost: number;
   originalImageUrl: string;
-  generatedImageUrl: string;
+  generatedImageUrl: string | null;
 }
 
 interface GalleryCardProps {
@@ -32,7 +32,7 @@ export function GalleryCard({ item, onClick }: GalleryCardProps) {
       <div className="relative">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={item.generatedImageUrl}
+          src={item.generatedImageUrl ?? undefined}
           alt={item.title}
           className="aspect-square w-full object-cover"
           loading="lazy"
