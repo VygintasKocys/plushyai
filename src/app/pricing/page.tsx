@@ -1,17 +1,4 @@
-import Link from "next/link";
-import { Check } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { PRICING_PLANS } from "@/lib/mock-data";
-import { cn } from "@/lib/utils";
+import { PricingCards } from "@/components/pricing-cards";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -47,12 +34,6 @@ const faqs = [
   },
 ];
 
-const ctaLabels: Record<string, string> = {
-  basic: "Get Started",
-  pro: "Go Pro",
-  elite: "Go Elite",
-};
-
 export default function PricingPage() {
   return (
     <main className="flex-1">
@@ -69,52 +50,7 @@ export default function PricingPage() {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-20">
-          {PRICING_PLANS.map((plan) => (
-            <Card
-              key={plan.id}
-              className={cn(
-                "relative flex flex-col",
-                plan.popular && "border-primary ring-2 ring-primary/20"
-              )}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <Badge>Most Popular</Badge>
-                </div>
-              )}
-              <CardHeader className="text-center pb-2">
-                <CardTitle className="text-xl">{plan.name}</CardTitle>
-                <CardDescription>{plan.credits} credits/month</CardDescription>
-              </CardHeader>
-              <CardContent className="flex-1 text-center">
-                <div className="mb-6">
-                  <span className="text-4xl font-bold">${plan.price}</span>
-                  <span className="text-muted-foreground">/month</span>
-                </div>
-                <ul className="space-y-3 text-left">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  asChild
-                  className="w-full"
-                  variant={plan.popular ? "default" : "outline"}
-                >
-                  <Link href="/register">
-                    {ctaLabels[plan.id] || "Get Started"}
-                  </Link>
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+        <PricingCards />
 
         {/* How Credits Work */}
         <div className="max-w-2xl mx-auto mb-20">

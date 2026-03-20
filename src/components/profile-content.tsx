@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Crown, Calendar, Mail, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Calendar, Mail, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import { PlanBadge, usePlanState } from "@/components/plan-badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { authClient } from "@/lib/auth-client";
 
 interface ProfileContentProps {
   user: {
@@ -29,6 +31,7 @@ interface ProfileContentProps {
 
 export function ProfileContent({ user, credits, totalGenerations }: ProfileContentProps) {
   const router = useRouter();
+  const { planName, planCredits, isLoading, subscription } = usePlanState();
 
   const memberDate = new Date(user.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
@@ -68,10 +71,7 @@ export function ProfileContent({ user, credits, totalGenerations }: ProfileConte
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
                   <h2 className="text-2xl font-semibold">{user.name}</h2>
-                  <Badge variant="secondary">
-                    <Crown className="h-3 w-3 mr-1" />
-                    Free
-                  </Badge>
+                  <PlanBadge planName={planName} isLoading={isLoading} />
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Mail className="h-4 w-4" />
@@ -95,17 +95,32 @@ export function ProfileContent({ user, credits, totalGenerations }: ProfileConte
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium">Free Plan</p>
-                <p className="text-sm text-muted-foreground">No active subscription</p>
+                <p className="font-medium">{planName} Plan</p>
+                <p className="text-sm text-muted-foreground">
+                  {subscription ? "Active" : "No active subscription"}
+                </p>
               </div>
+              {subscription ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => authClient.customer.portal()}
+                >
+                  Manage Subscription
+                </Button>
+              ) : (
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/pricing">Upgrade Plan</Link>
+                </Button>
+              )}
             </div>
             <Separator />
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Credits remaining</span>
-                <span className="font-medium">{credits}</span>
+                <span className="font-medium">{credits} / {planCredits}</span>
               </div>
-              <Progress value={credits > 0 ? Math.min(100, (credits / 3) * 100) : 0} />
+              <Progress value={planCredits > 0 ? Math.min(100, (credits / planCredits) * 100) : 0} />
             </div>
             <div className="flex justify-between text-sm">
               <span>Total generations</span>

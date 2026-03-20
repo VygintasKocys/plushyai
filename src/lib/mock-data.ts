@@ -8,6 +8,7 @@ export const PRICING_PLANS = [
     name: "Basic",
     price: 9,
     credits: 30,
+    polarProductId: "a137536a-e44e-48f9-a123-988ba4db21a0",
     popular: false,
     features: [
       "30 credits per month",
@@ -21,6 +22,7 @@ export const PRICING_PLANS = [
     name: "Pro",
     price: 19,
     credits: 100,
+    polarProductId: "82ecbe95-3a6b-47ee-8213-7c36923f7e72",
     popular: true,
     features: [
       "100 credits per month",
@@ -35,6 +37,7 @@ export const PRICING_PLANS = [
     name: "Elite",
     price: 29,
     credits: 200,
+    polarProductId: "71a254f3-87a8-43b6-9e42-dedf5e7928e0",
     popular: false,
     features: [
       "200 credits per month",

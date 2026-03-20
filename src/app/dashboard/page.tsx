@@ -1,13 +1,13 @@
 import Link from "next/link";
+import { eq, count, and, gte } from "drizzle-orm";
 import {
   Sparkles,
   ImageIcon,
   CalendarDays,
-  Crown,
   Plus,
 } from "lucide-react";
+import { DashboardPlanBadge, DashboardCreditProgress } from "@/components/dashboard-plan-badge";
 import { GradientPlaceholder } from "@/components/gradient-placeholder";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,8 +15,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { MOCK_GALLERY, MONTHLY_GENERATIONS } from "@/lib/mock-data";
+import { db } from "@/lib/db";
+import { MOCK_GALLERY } from "@/lib/mock-data";
+import { user, generation } from "@/lib/schema";
 import { requireAuth } from "@/lib/session";
 import type { Metadata } from "next";
 
@@ -24,34 +25,57 @@ export const metadata: Metadata = {
   title: "Dashboard | Plushify",
 };
 
-const stats = [
-  {
-    label: "Credits Remaining",
-    value: "0/0",
-    icon: Sparkles,
-  },
-  {
-    label: "Total Generations",
-    value: "0",
-    icon: ImageIcon,
-  },
-  {
-    label: "This Month",
-    value: MONTHLY_GENERATIONS.toString(),
-    icon: CalendarDays,
-  },
-  {
-    label: "Plan",
-    value: "Free",
-    icon: Crown,
-  },
-];
-
 const recentItems = MOCK_GALLERY.slice(0, 4);
 
 export default async function DashboardPage() {
   const session = await requireAuth();
   const firstName = session.user.name?.split(" ")[0] || "there";
+
+  const startOfMonth = new Date();
+  startOfMonth.setDate(1);
+  startOfMonth.setHours(0, 0, 0, 0);
+
+  const [[userData], [totalGenCount], [monthlyGenCount]] = await Promise.all([
+    db
+      .select({ credits: user.credits })
+      .from(user)
+      .where(eq(user.id, session.user.id)),
+    db
+      .select({ count: count() })
+      .from(generation)
+      .where(eq(generation.userId, session.user.id)),
+    db
+      .select({ count: count() })
+      .from(generation)
+      .where(
+        and(
+          eq(generation.userId, session.user.id),
+          gte(generation.createdAt, startOfMonth)
+        )
+      ),
+  ]);
+
+  const credits = userData?.credits ?? 0;
+  const totalGenerations = totalGenCount?.count ?? 0;
+  const monthlyGenerations = monthlyGenCount?.count ?? 0;
+
+  const stats = [
+    {
+      label: "Credits Remaining",
+      value: credits.toString(),
+      icon: Sparkles,
+    },
+    {
+      label: "Total Generations",
+      value: totalGenerations.toString(),
+      icon: ImageIcon,
+    },
+    {
+      label: "This Month",
+      value: monthlyGenerations.toString(),
+      icon: CalendarDays,
+    },
+  ];
 
   return (
     <div className="container max-w-6xl mx-auto py-8 px-4">
@@ -61,10 +85,7 @@ export default async function DashboardPage() {
             Welcome back, {firstName}!
           </h1>
           <div className="flex items-center gap-2 mt-1">
-            <Badge variant="secondary" className="font-medium">
-              <Crown className="h-3 w-3 mr-1" />
-              Free Plan
-            </Badge>
+            <DashboardPlanBadge />
           </div>
         </div>
         <Button asChild size="lg">
@@ -75,7 +96,7 @@ export default async function DashboardPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {stats.map((stat) => (
           <Card key={stat.label}>
             <CardContent className="pt-6">
@@ -98,15 +119,7 @@ export default async function DashboardPage() {
           <CardTitle className="text-lg">Credit Usage</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">
-                0 of 0 credits remaining
-              </span>
-              <span className="font-medium">0%</span>
-            </div>
-            <Progress value={0} />
-          </div>
+          <DashboardCreditProgress credits={credits} />
         </CardContent>
       </Card>
 
