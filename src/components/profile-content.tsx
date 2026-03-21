@@ -1,11 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Calendar, Mail, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Calendar, Mail, AlertTriangle, Receipt, ExternalLink, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { PlanBadge, usePlanState } from "@/components/plan-badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,9 +31,41 @@ interface ProfileContentProps {
   totalGenerations: number;
 }
 
+interface Order {
+  id: string;
+  createdAt: string;
+  totalAmount: number;
+  currency: string;
+  billingReason: string;
+  product: { name: string } | null;
+}
+
 export function ProfileContent({ user, credits, totalGenerations }: ProfileContentProps) {
   const router = useRouter();
   const { planName, planCredits, isLoading, subscription } = usePlanState();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
+
+  useEffect(() => {
+    authClient.customer.orders
+      .list({ query: { page: 1, limit: 20 } })
+      .then((response: any) => {
+        const data = response?.data;
+        let items: Order[] = [];
+        if (Array.isArray(data)) {
+          items = data;
+        } else if (data?.result?.items) {
+          items = data.result.items;
+        } else if (data?.items) {
+          items = data.items;
+        }
+        setOrders(items);
+      })
+      .catch(() => {
+        // Polar may not be configured
+      })
+      .finally(() => setOrdersLoading(false));
+  }, []);
 
   const memberDate = new Date(user.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
@@ -126,6 +160,80 @@ export function ProfileContent({ user, credits, totalGenerations }: ProfileConte
               <span>Total generations</span>
               <span className="font-medium">{totalGenerations}</span>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Transaction History */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Receipt className="h-5 w-5" />
+                  Transaction History
+                </CardTitle>
+                <CardDescription>Your purchases and subscription payments</CardDescription>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => authClient.customer.portal()}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Billing Portal
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {ordersLoading ? (
+              <div className="flex items-center justify-center py-8 text-muted-foreground">
+                <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                Loading transactions...
+              </div>
+            ) : !Array.isArray(orders) || orders.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <Receipt className="h-10 w-10 mx-auto mb-3 opacity-50" />
+                <p>No transactions yet</p>
+                <p className="text-sm mt-1">Your purchases will appear here</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {orders.map((order) => (
+                  <div
+                    key={order.id}
+                    className="flex items-center justify-between p-3 border rounded-md"
+                  >
+                    <div className="space-y-1">
+                      <p className="font-medium text-sm">
+                        {order.product?.name ?? "Purchase"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(order.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Badge variant="secondary" className="text-xs">
+                        {order.billingReason === "subscription_cycle"
+                          ? "Renewal"
+                          : order.billingReason === "subscription_create"
+                            ? "Subscription"
+                            : "Purchase"}
+                      </Badge>
+                      <span className="font-medium text-sm">
+                        {(order.totalAmount / 100).toLocaleString("en-US", {
+                          style: "currency",
+                          currency: order.currency || "USD",
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 

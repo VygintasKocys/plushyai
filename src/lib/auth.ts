@@ -3,7 +3,7 @@ import { Polar } from "@polar-sh/sdk"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { admin } from "better-auth/plugins"
-import { eq } from "drizzle-orm"
+import { eq, sql } from "drizzle-orm"
 import { db } from "./db"
 import { PRICING_PLANS } from "./mock-data"
 import { user } from "./schema"
@@ -71,17 +71,34 @@ export const auth = betterAuth({
               webhooks({
                 secret: process.env.POLAR_WEBHOOK_SECRET!,
                 onOrderPaid: async (payload) => {
+                  // eslint-disable-next-line no-console
+                  console.log(`[Polar] onOrderPaid fired`, JSON.stringify({
+                    productId: payload.data.productId,
+                    externalId: payload.data.customer?.externalId,
+                    customerId: payload.data.customerId,
+                  }))
+
                   const externalId = payload.data.customer?.externalId
-                  if (!externalId) return
+                  if (!externalId) {
+                    // eslint-disable-next-line no-console
+                    console.log(`[Polar] No externalId found, skipping credit update`)
+                    return
+                  }
 
                   const productId = payload.data.productId
                   const plan = PRICING_PLANS.find((p) => p.polarProductId === productId)
-                  if (!plan) return
+                  if (!plan) {
+                    // eslint-disable-next-line no-console
+                    console.log(`[Polar] No matching plan for productId: ${productId}`)
+                    return
+                  }
 
                   await db
                     .update(user)
-                    .set({ credits: plan.credits })
+                    .set({ credits: sql`${user.credits} + ${plan.credits}` })
                     .where(eq(user.id, externalId))
+                  // eslint-disable-next-line no-console
+                  console.log(`[Polar] Added ${plan.credits} credits for user ${externalId}`)
                 },
                 onSubscriptionCanceled: async (payload) => {
                   // No credit removal — user retains credits until billing period ends
